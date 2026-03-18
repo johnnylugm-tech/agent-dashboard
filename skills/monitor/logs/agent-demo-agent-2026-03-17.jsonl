@@ -1,0 +1,2 @@
+{"timestamp": "2026-03-17T13:43:27.609333Z", "level": "INFO", "agent_id": "demo-agent", "task_id": "e4d442b0", "event": "task_start", "message": "task_start", "context": {"user_id": "user-123"}, "metrics": {}}
+{"timestamp": "2026-03-17T13:43:27.733572Z", "level": "INFO", "agent_id": "demo-agent", "task_id": "e4d442b0", "event": "task_complete", "message": "task_complete", "context": {}, "metrics": {}}

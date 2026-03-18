@@ -1,0 +1,2 @@
+{"timestamp": "2026-03-17T13:43:27.734164Z", "level": "INFO", "agent_id": "error-demo", "task_id": "b6e61a95", "event": "task_start", "message": "task_start", "context": {}, "metrics": {}}
+{"timestamp": "2026-03-17T13:43:27.734565Z", "level": "ERROR", "agent_id": "error-demo", "task_id": "b6e61a95", "event": "task_error", "message": "task_error", "context": {}, "metrics": {}}
