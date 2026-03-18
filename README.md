@@ -20,9 +20,32 @@ python example.py
 
 ## 🎬 Demo
 
-![Demo Preview](https://your-demo-url.com/demo.gif)
+### 文字範例輸出
 
-[觀看完整影片示範 →](https://youtube.com/your-demo-video)
+```
+==================================================
+Example 1: Basic Usage
+==================================================
+2026-03-18T04:55:30 INFO     [71383639] task_start
+Task started: 71383639
+2026-03-18T04:55:30 INFO     [71383639] task_complete
+Task completed!
+Health: healthy
+
+==================================================
+Example 2: Error Classification
+==================================================
+Error: E1001  Level: L1  Action: return   Description: 輸入錯誤
+Error: E2003  Level: L2  Action: retry    Description: 工具錯誤
+Error: E3001  Level: L3  Action: degrade  Description: 執行錯誤
+Error: E4001  Level: L4  Action: circuit_break  Description: 系統錯誤
+```
+
+### 本地運行
+
+```bash
+python skills/monitor/example.py
+```
 
 ## 📂 專案結構
 

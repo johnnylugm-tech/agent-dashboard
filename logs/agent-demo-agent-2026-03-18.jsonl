@@ -1,0 +1,6 @@
+{"timestamp": "2026-03-18T04:54:55.397878Z", "level": "INFO", "agent_id": "demo-agent", "task_id": "0d40e5d1", "event": "task_start", "message": "task_start", "context": {"user_id": "user-123"}, "metrics": {}}
+{"timestamp": "2026-03-18T04:54:55.573191Z", "level": "INFO", "agent_id": "demo-agent", "task_id": "0d40e5d1", "event": "task_complete", "message": "task_complete", "context": {}, "metrics": {}}
+{"timestamp": "2026-03-18T04:55:30.859882Z", "level": "INFO", "agent_id": "demo-agent", "task_id": "71383639", "event": "task_start", "message": "task_start", "context": {"user_id": "user-123"}, "metrics": {}}
+{"timestamp": "2026-03-18T04:55:30.982038Z", "level": "INFO", "agent_id": "demo-agent", "task_id": "71383639", "event": "task_complete", "message": "task_complete", "context": {}, "metrics": {}}
+{"timestamp": "2026-03-18T04:55:48.385965Z", "level": "INFO", "agent_id": "demo-agent", "task_id": "3c0ce1e3", "event": "task_start", "message": "task_start", "context": {"user_id": "user-123"}, "metrics": {}}
+{"timestamp": "2026-03-18T04:55:48.497342Z", "level": "INFO", "agent_id": "demo-agent", "task_id": "3c0ce1e3", "event": "task_complete", "message": "task_complete", "context": {}, "metrics": {}}
