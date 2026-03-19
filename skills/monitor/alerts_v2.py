@@ -78,8 +78,19 @@ class WebhookNotifier(AlertChannel):
 
 class AlertManager:
     """
-    警報管理器
-    根據錯誤率、熔斷狀態等條件觸發通知
+    警報管理器 - 支持自定義規則
+    
+    使用範例:
+        manager = AlertManager()
+        
+        # 添加自定義規則
+        manager.add_rule(
+            name="high_cost",
+            condition=lambda m: m.get("cost", 0) > 10.0,
+            level="warning",
+            title="HighCost",
+            message="成本超過 $10"
+        )
     """
     
     # 警報閾值
@@ -96,7 +107,13 @@ class AlertManager:
         }
     }
     
-    def __init__(self):
+    def __init__(self, custom_rules: list = None):
+        """
+        初始化警報管理器
+        
+        Args:
+            custom_rules: 自定義警報規則列表
+        """
         self.channels = {
             "telegram": TelegramNotifier(),
             "slack": SlackNotifier(),
@@ -104,6 +121,39 @@ class AlertManager:
             "webhook": WebhookNotifier()
         }
         self.alert_history = []
+        
+        # 自定義規則
+        self.custom_rules = custom_rules or []
+    
+    def add_rule(self, name: str, condition, level: str, 
+                 title: str, message: str, channels: list = None):
+        """
+        添加自定義警報規則
+        
+        Args:
+            name: 規則名稱
+            condition: 條件函數 (lambda)
+            level: 警報級別 (critical/warning/info)
+            title: 標題
+            message: 訊息模板
+            channels: 通知渠道
+        """
+        self.custom_rules.append({
+            "name": name,
+            "condition": condition,
+            "level": level,
+            "title": title,
+            "message": message,
+            "channels": channels or ["slack"]
+        })
+    
+    def remove_rule(self, name: str):
+        """移除規則"""
+        self.custom_rules = [r for r in self.custom_rules if r["name"] != name]
+    
+    def list_rules(self) -> list:
+        """列出所有規則"""
+        return [{"name": r["name"], "level": r["level"]} for r in self.custom_rules]
     
     def check_and_notify(self, metrics: Dict, agent_id: str) -> List[Dict]:
         """

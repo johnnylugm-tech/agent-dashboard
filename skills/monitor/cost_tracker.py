@@ -57,6 +57,7 @@ class TokenUsage:
     input_tokens: int
     output_tokens: int
     duration_ms: int
+    task_id: str = None  # 新增：任務 ID
     
     @property
     def total_tokens(self) -> int:
@@ -115,9 +116,17 @@ class CostTracker:
         self.calculator = CostCalculator()
     
     def record(self, agent_id: str, model: str, input_tokens: int, 
-               output_tokens: int, duration_ms: int = 0) -> float:
+               output_tokens: int, duration_ms: int = 0, task_id: str = None) -> float:
         """
         記錄一次 Token 使用
+        
+        Args:
+            agent_id: Agent ID
+            model: 模型名稱
+            input_tokens: 輸入 token 數
+            output_tokens: 輸出 token 數
+            duration_ms: 請求耗時（毫秒）
+            task_id: 任務 ID（可選，用於細分成本）
         
         Returns:
             本次請求的成本（美元）
@@ -132,7 +141,8 @@ class CostTracker:
             model=model,
             input_tokens=input_tokens,
             output_tokens=output_tokens,
-            duration_ms=duration_ms
+            duration_ms=duration_ms,
+            task_id=task_id  # 新增任務 ID
         )
         self.usage_records.append(record)
         
@@ -188,6 +198,60 @@ class CostTracker:
             "period": period,
             "total_cost": round(total_cost, 4),
             "agents": agent_costs
+        }
+    
+    def get_task_cost(self, task_id: str, period: str = "daily") -> Dict:
+        """
+        獲取指定任務的成本明細
+        
+        Args:
+            task_id: 任務 ID
+            period: daily / weekly / monthly
+        
+        Returns:
+            任務成本明細
+        """
+        records = [r for r in self.usage_records if r.task_id == task_id]
+        
+        if not records:
+            return {"task_id": task_id, "cost": 0, "message": "No records found"}
+        
+        # 按模型分組
+        by_model = defaultdict(lambda: {"tokens": 0, "cost": 0, "requests": 0})
+        total_cost = 0
+        total_tokens = 0
+        
+        for r in records:
+            cost = self.calculator.calculate(r.model, r.input_tokens, r.output_tokens)
+            by_model[r.model]["tokens"] += r.total_tokens
+            by_model[r.model]["cost"] += cost
+            by_model[r.model]["requests"] += 1
+            total_cost += cost
+            total_tokens += r.total_tokens
+        
+        return {
+            "task_id": task_id,
+            "period": period,
+            "total_cost": round(total_cost, 4),
+            "total_tokens": total_tokens,
+            "requests": len(records),
+            "by_model": dict(by_model)
+        }
+    
+    def get_all_tasks_cost(self, period: str = "daily") -> Dict:
+        """獲取所有任務的成本"""
+        task_ids = set(r.task_id for r in self.usage_records if r.task_id)
+        
+        task_costs = {}
+        for task_id in task_ids:
+            task_costs[task_id] = self.get_task_cost(task_id, period)
+        
+        total_cost = sum(t["total_cost"] for t in task_costs.values())
+        
+        return {
+            "period": period,
+            "total_cost": round(total_cost, 4),
+            "tasks": task_costs
         }
     
     def get_cost_trend(self, agent_id: str = None, days: int = 7) -> Dict:
